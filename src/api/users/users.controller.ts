@@ -14,11 +14,6 @@ import { UsersService } from './users.service';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post()
-  create(@Body() body: Prisma.UserCreateInput): Promise<User> {
-    return this.usersService.create(body);
-  }
-
   @Get()
   findAll(): Promise<User[]> {
     return this.usersService.users({});
@@ -27,6 +22,11 @@ export class UsersController {
   @Get(':id')
   findOneById(@Param('id') id: string): Promise<User> {
     return this.usersService.user({ id: +id });
+  }
+
+  @Get(':email')
+  findOneByEmail(@Param('email') email: string): Promise<User> {
+    return this.usersService.user({ email });
   }
 
   @Patch(':id')
