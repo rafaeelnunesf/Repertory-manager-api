@@ -1,26 +1,23 @@
-name: Test
-on:
-  pull_request:
-env:
-  POSTGRES_USERNAME: postgres
-  POSTGRES_PASSWORD: top_secret
-  POSTGRES_HOST: postgres-test
-  POSTGRES_PORT: 5432
-  POSTGRES_DB: repertory_manager_test
-  JWT_SECRET: top_secret
-  DATABASE_URL: postgresql://${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
+name: Pull Request
+on: [pull_request]
 jobs:
-  test:
-    runs-on: ubuntu-20.04
-    timeout-minutes: 10
-    strategy:
-      matrix:
-        node-version: [16.x]
+  PullRequest:
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Make env file
+        uses: SpicyPizza/create-envfile@v1
+        with:
+          envkey_JWT_SECRET: 'bananinha'
+          envkey_POSTGRES_USER: 'postgres'
+          envkey_POSTGRES_PASSWORD: '123456'
+          envkey_POSTGRES_DB: 'repertory_manager_test'
+          envkey_DATABASE_URL: 'postgres://postgres:123456@db:5432/repertory_manager_test'
+          file_name: .env.test
+      - name: Create DB
+        run: docker-compose -f docker-compose-test.yml run node_app_repertory_manager-test npx prisma migrate dev
+      - name: Run Tests
+        run: docker-compose -f docker-compose-test.yml run node_app_repertory_manager-test npm run test
       - name: Build
-        run: npm run ci:build
-
-      - name: Test
-        run: npm run ci:test
+        run: npm i --force && npm run build

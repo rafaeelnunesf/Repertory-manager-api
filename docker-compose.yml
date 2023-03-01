@@ -1,36 +1,28 @@
-version: '3.4'
+version: '3'
 services:
   db:
-    image: postgres:13
+    image: postgres
     container_name: db
     restart: always
     ports:
-      - '${POSTGRES_PORT}:${POSTGRES_PORT}'
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    volumes:
-      - db:/var/lib/postgresql/data
-    command: postgres -p ${POSTGRES_PORT}
-  node_app:
-    container_name: node_app
-    build:
-      dockerfile: Dockerfile
-      context: .
-      target: development
-    ports:
-      - ${PORT}:${PORT}
-    depends_on:
-      - db
+      - 2345:5432
     env_file:
       - .env
     volumes:
-      - .:/usr/src/app
-      - ./usr/src/app/node_modules
-      - ./usr/src/app/tmp
-    environment:
-      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:${POSTGRES_PORT}/${POSTGRES_DB}?schema=public
-    command: npm run start:dev
+      - postgres:/var/lib/postgresql/data
+
+  node_app_repertory_manager:
+    container_name: node_app_repertory_manager
+    build: .
+    ports:
+      - 5000:5000
+    env_file:
+      - .env
+    depends_on:
+      - db
+    volumes:
+      - .:/usr/src/
+      - /usr/src/node_modules
+
 volumes:
-  db:
+  postgres:
