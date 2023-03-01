@@ -8,7 +8,7 @@ COPY . .
 
 EXPOSE 5000
 
-RUN npm i 
+RUN npm i --force
 RUN npx prisma generate
 
 CMD ["npm", "run", "dev-migrate"]
