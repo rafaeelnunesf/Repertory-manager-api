@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Prisma, User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../../prisma/prisma.service';
+import { DuplicateException } from './exceptions/duplicated.exception';
 
 @Injectable()
 export class UsersService {
@@ -39,8 +40,11 @@ export class UsersService {
   }
 
   async create(data: Prisma.UserCreateInput): Promise<User> {
-    const saltOrRounds = 10;
-    const hashedPassword = await bcrypt.hash(data.password, saltOrRounds);
+    const existingUser = await this.findOneByEmail({ email: data.email });
+    if (existingUser) throw new DuplicateException();
+
+    const salt = 10;
+    const hashedPassword = await bcrypt.hash(data.password, salt);
     return this.prisma.user.create({
       data: { ...data, password: hashedPassword },
     });
