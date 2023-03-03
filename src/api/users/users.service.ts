@@ -3,6 +3,7 @@ import { Prisma, User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../../prisma/prisma.service';
 import { DuplicateException } from './exceptions/duplicated.exception';
+import { NotFoundException } from './exceptions/not-found.exception';
 
 @Injectable()
 export class UsersService {
@@ -17,9 +18,12 @@ export class UsersService {
   async findOneByEmail(
     where: Prisma.UserWhereUniqueInput,
   ): Promise<User | null> {
-    return this.prisma.user.findUnique({
+    const user = await this.prisma.user.findUnique({
       where,
     });
+
+    if (!user) throw new NotFoundException('Email not found');
+    return user;
   }
 
   async users(params: {
@@ -40,7 +44,12 @@ export class UsersService {
   }
 
   async create(data: Prisma.UserCreateInput): Promise<User> {
-    const existingUser = await this.findOneByEmail({ email: data.email });
+    const existingUser = await this.prisma.user.findUnique({
+      where: {
+        email: data.email,
+      },
+    });
+
     if (existingUser) throw new DuplicateException();
 
     const salt = 10;
