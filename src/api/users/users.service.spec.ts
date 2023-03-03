@@ -5,6 +5,7 @@ import { ConfigService } from '../../config/config.service';
 import { UsersService } from './users.service';
 import { faker } from '@faker-js/faker';
 import { createUser } from '../../../test/factories/users.factory';
+import { NotFoundException } from './exceptions/not-found.exception';
 
 describe('CustomersService', () => {
   let service: UsersService;
@@ -52,13 +53,13 @@ describe('CustomersService', () => {
       };
 
       //Act
-      const customer = await service.create(data);
+      const user = await service.create(data);
 
       //Assert
-      expect(customer).toBeDefined();
-      expect(customer.name).toEqual(data.name);
-      expect(customer.email).toEqual(data.email);
-      expect(customer.password).not.toEqual(data.password);
+      expect(user).toBeDefined();
+      expect(user.name).toEqual(data.name);
+      expect(user.email).toEqual(data.email);
+      expect(user.password).not.toEqual(data.password);
     });
   });
   it('should create and return an array of users successfuly', async () => {
@@ -66,37 +67,40 @@ describe('CustomersService', () => {
     await createUser(prisma);
     await createUser(prisma);
 
+    //Act
     const test = await service.users({});
 
+    //Assert
     expect(test).toBeDefined();
     expect(Array.isArray(test)).toBe(true);
     expect(test).toHaveLength(2);
   });
 
-  /*
   it('should create and return an unique existent customer', async () => {
     //Arrange
-    const data: Prisma.CustomerCreateInput = {
-      name: 'Rafael',
-      cpf: '111.444.777-35',
-      birthday: '25-08-1998',
-    };
+    const password = '123456';
+    const data = await createUser(prisma, { password });
 
-    await service.create(data);
+    //Act
+    const user = await service.user({ email: data.email });
 
-    const test = await service.findOne(data.cpf);
-
-    expect(test).toBeDefined();
-    expect(test.cpf).toEqual(data.cpf);
+    //Assert
+    expect(user).toBeDefined();
+    expect(user.email).toEqual(data.email);
+    expect(user.name).toEqual(data.name);
+    expect(user.password).not.toEqual(password);
   });
-  it('should return an error if a non-existent cpf is passed', async () => {
-    //Arrange
-    const nonExistentCPF = '111.444.777-35';
 
+  it('should return an error if a non-existent email is passed', async () => {
+    //Arrange
+    const nonExistentEmail = 'email@example.com';
+
+    //Act
     try {
-      await service.findOne(nonExistentCPF);
+      await service.findOneByEmail({ email: nonExistentEmail });
     } catch (error) {
-      expect(error).toEqual(new CustomerNotFoundException());
+      //Assert
+      expect(error).toEqual(new NotFoundException('Email not found'));
     }
-  }); */
+  });
 });
