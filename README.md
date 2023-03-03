@@ -4,7 +4,8 @@ The idea of the App is:
 
 _"An app where you can create and manage music repertoires that you want to keep fresh in your memory"._
 
-This project came about after a problem that I as a musician had been facing for a long time: I always ended up forgetting how to play some songs after a while without practicing, so I needed something to show me when was the last time I played a certain song, so I could practice again and keep it fresh in my memory
+This project came about after a problem that I as a musician had been facing for a long time: I always ended up forgetting how to play some songs after a while without practicing, so I needed something to show me when was the last time I played a certain song, so I could practice again and keep it fresh in my memory, in fact, this project is a new version of [My repertory](https://github.com/rafaeelnunesf/API-My-Repertory).
+I added new features, like creating groups with the same repertoire, classifying songs from 1 to 10. And I have other ideas in mind that are not implemented yet
 
 This is an authorial project in constant development, so, I'll be happy if you could provide me any feedback about the project, code, structure or anything that you can report that could make me a better developer!
 
