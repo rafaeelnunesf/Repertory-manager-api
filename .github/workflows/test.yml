@@ -1,11 +1,14 @@
 name: Pull Request
-on: [pull_request]
+on:
+  pull_request:
+    branches:
+      - main
 jobs:
   PullRequest:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v3
+        uses:
       - name: Make env file
         uses: SpicyPizza/create-envfile@v1
         with:
