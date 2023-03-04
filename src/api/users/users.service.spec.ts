@@ -5,7 +5,7 @@ import { ConfigService } from '../../config/config.service';
 import { UsersService } from './users.service';
 import { faker } from '@faker-js/faker';
 import { NotFoundException } from './exceptions/not-found.exception';
-import { createUser } from 'test/factories/users.factory';
+import { createUser } from './test-factory/users.factory';
 
 describe('CustomersService', () => {
   let service: UsersService;
