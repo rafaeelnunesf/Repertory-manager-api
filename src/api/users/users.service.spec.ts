@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Prisma, PrismaClient, User } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { ConfigService } from '../../config/config.service';
 import { UsersService } from './users.service';
 import { faker } from '@faker-js/faker';
-import { createUser } from '../../../test/factories/users.factory';
 import { NotFoundException } from './exceptions/not-found.exception';
+import { createUser } from './test-factory/users.factory';
 
 describe('CustomersService', () => {
   let service: UsersService;

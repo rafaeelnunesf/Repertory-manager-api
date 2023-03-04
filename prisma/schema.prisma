@@ -12,10 +12,64 @@ datasource db {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  email    String @unique
+  id       Int        @id @default(autoincrement())
+  email    String     @unique
   name     String
   password String
+  Team     TeamUser[]
 
   @@map("users")
+}
+
+model TeamUser {
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
+
+  team   Team    @relation(fields: [teamId], references: [id])
+  teamId Int
+  main   Boolean
+
+  @@id([userId, teamId])
+}
+
+model Team {
+  id          Int         @id @default(autoincrement())
+  name        String
+  user        TeamUser[]
+  repertoires Repertory[]
+
+  @@map("teams")
+}
+
+model Repertory {
+  id     Int             @id @default(autoincrement())
+  team   Team            @relation(fields: [teamId], references: [id])
+  teamId Int
+  songs  RepertorySong[]
+
+  @@map("repertoires")
+}
+
+model RepertorySong {
+  repertoires Repertory @relation(fields: [repertoryId], references: [id])
+  repertoryId Int
+
+  song   Song @relation(fields: [songId], references: [id])
+  songId Int
+
+  lastTimePlayed DateTime
+  timesPlayed    Int
+  rating         Int
+
+  @@id([repertoryId, songId])
+}
+
+model Song {
+  id     Int    @id @default(autoincrement())
+  name   String
+  author String
+  tab    String
+  lyrics String
+
+  repertoires RepertorySong[]
 }
