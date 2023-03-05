@@ -16,16 +16,16 @@ model User {
   email    String     @unique
   name     String
   password String
-  Team     TeamUser[]
+  team     TeamUser[]
 
   @@map("users")
 }
 
 model TeamUser {
-  user   User @relation(fields: [userId], references: [id])
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId Int
 
-  team   Team    @relation(fields: [teamId], references: [id])
+  team   Team    @relation(fields: [teamId], references: [id], onDelete: Cascade)
   teamId Int
   main   Boolean
 

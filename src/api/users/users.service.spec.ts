@@ -20,11 +20,15 @@ describe('CustomersService', () => {
 
   beforeAll(async () => {
     await prisma.$connect();
-    await prisma.user.deleteMany();
+    await prisma.user.deleteMany({});
+    await prisma.team.deleteMany();
+    await prisma.teamUser.deleteMany();
   });
 
   afterAll(async () => {
-    await prisma.user.deleteMany();
+    await prisma.user.deleteMany({});
+    await prisma.team.deleteMany();
+    await prisma.teamUser.deleteMany();
     await prisma.$disconnect();
   });
 
@@ -36,7 +40,9 @@ describe('CustomersService', () => {
     service = module.get<UsersService>(UsersService);
   });
   afterEach(async () => {
-    await prisma.user.deleteMany();
+    await prisma.user.deleteMany({});
+    await prisma.team.deleteMany();
+    await prisma.teamUser.deleteMany();
   });
 
   it('should be defined', () => {

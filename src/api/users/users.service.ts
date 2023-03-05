@@ -55,7 +55,18 @@ export class UsersService {
     const salt = 10;
     const hashedPassword = await bcrypt.hash(data.password, salt);
     return this.prisma.user.create({
-      data: { ...data, password: hashedPassword },
+      data: {
+        ...data,
+        password: hashedPassword,
+        team: {
+          create: [
+            {
+              main: true,
+              team: { create: { name: 'main' } },
+            },
+          ],
+        },
+      },
     });
   }
 
@@ -70,8 +81,8 @@ export class UsersService {
     });
   }
 
-  async delete(where: Prisma.UserWhereUniqueInput): Promise<User> {
-    return this.prisma.user.delete({
+  async delete(where: Prisma.UserWhereUniqueInput): Promise<void> {
+    await this.prisma.user.delete({
       where,
     });
   }
