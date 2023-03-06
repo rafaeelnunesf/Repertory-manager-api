@@ -16,11 +16,6 @@ export class UsersController {
     return this.usersService.user({ id: +id });
   }
 
-  @Get(':email')
-  findOneByEmail(@Param('email') email: string): Promise<User> {
-    return this.usersService.user({ email });
-  }
-
   @Patch(':id')
   update(
     @Param('id') id: string,
