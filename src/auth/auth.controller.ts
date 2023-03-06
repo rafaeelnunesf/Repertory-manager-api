@@ -12,7 +12,8 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 import { AuthRequest } from './models/AuthRequest';
 import { Public } from './decorators/public.decorator';
 import { UsersService } from '../api/users/users.service';
-import { Prisma, User } from '@prisma/client';
+import { Prisma } from '@prisma/client';
+import { UserToken } from './models/UserToken';
 
 @Controller('auth')
 export class AuthController {
@@ -25,13 +26,13 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   @HttpCode(HttpStatus.OK)
-  async login(@Request() req: AuthRequest) {
+  async login(@Request() req: AuthRequest): Promise<UserToken> {
     return this.authService.login(req.user);
   }
 
   @Public()
   @Post('signup')
-  public async createUser(@Body() body: Prisma.UserCreateInput): Promise<User> {
-    return await this.userService.create(body);
+  public async createUser(@Body() body: Prisma.UserCreateInput): Promise<void> {
+    await this.userService.create(body);
   }
 }
