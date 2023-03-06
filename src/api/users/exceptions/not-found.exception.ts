@@ -1,9 +1,6 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
 export class NotFoundException extends HttpException {
-  constructor(
-    message?: string | 'Not found',
-    status?: HttpStatus | HttpStatus.NOT_FOUND,
-  ) {
-    super(message, status);
+  constructor(message?: string, status?: HttpStatus) {
+    super(message || 'Not found', status || HttpStatus.NOT_FOUND);
   }
 }
