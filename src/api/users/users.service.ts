@@ -3,6 +3,7 @@ import { Prisma, User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../../prisma/prisma.service';
 import { DuplicateException } from './exceptions/duplicated.exception';
+import { NotAllowedException } from './exceptions/not-allowed-filed.exception';
 import { NotFoundException } from './exceptions/not-found.exception';
 
 @Injectable()
@@ -75,6 +76,7 @@ export class UsersService {
     data: Prisma.UserUpdateInput;
   }): Promise<User> {
     const { where, data } = params;
+    if (data.password || data.email) throw new NotAllowedException();
     return this.prisma.user.update({
       data,
       where,
