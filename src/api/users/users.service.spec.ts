@@ -82,7 +82,7 @@ describe('CustomersService', () => {
     expect(test).toHaveLength(2);
   });
 
-  it('should create and return an unique existent customer', async () => {
+  it('should return an unique existent customer', async () => {
     //Arrange
     const password = '123456';
     const data = await createUser(prisma, { password });
@@ -107,6 +107,29 @@ describe('CustomersService', () => {
     } catch (error) {
       //Assert
       expect(error).toEqual(new NotFoundException('Email not found'));
+    }
+  });
+  it('should delete a user successfully', async () => {
+    //Arrange
+    const data = { email: 'email@example.com' };
+    await createUser(prisma, data);
+
+    //Act
+    await service.delete(data);
+
+    //Assert
+    expect(await prisma.user.findUnique({ where: data })).toBeNull();
+  });
+  it('should return an error if the user does not exist', async () => {
+    //Arrange
+    const data = { email: 'email@example.com' };
+
+    //Act
+    try {
+      await service.delete(data);
+    } catch (error) {
+      //Assert
+      expect(error).toEqual(new NotFoundException('User not found'));
     }
   });
 });
