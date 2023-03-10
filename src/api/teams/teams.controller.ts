@@ -1,3 +1,4 @@
+import { CreateTeamDto } from './dtos/create-team.dto';
 import {
   Controller,
   Get,
@@ -7,16 +8,17 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
-import { Prisma, Team } from '@prisma/client';
+import { Prisma, Team, User } from '@prisma/client';
 import { TeamsService } from './teams.service';
+import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 
 @Controller('teams')
 export class TeamsController {
   constructor(private readonly teamsService: TeamsService) {}
 
   @Post()
-  create(@Body() data: Prisma.TeamCreateInput) {
-    return this.teamsService.create(data);
+  create(@Body() data: CreateTeamDto, @CurrentUser() user: User) {
+    return this.teamsService.create(data, user);
   }
 
   @Get()
