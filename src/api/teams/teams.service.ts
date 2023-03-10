@@ -1,13 +1,25 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, Team } from '@prisma/client';
+import { Prisma, Team, User } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 
 @Injectable()
 export class TeamsService {
   constructor(private prisma: PrismaService) {}
-  async create(data: Prisma.TeamCreateInput) {
-    return this.prisma.team.create({
-      data: { ...data },
+  async create(data: Prisma.TeamCreateInput, user: User) {
+    return this.prisma.teamUser.create({
+      data: {
+        main: false,
+        user: {
+          connect: {
+            id: user.id,
+          },
+        },
+        team: {
+          create: {
+            name: data.name,
+          },
+        },
+      },
     });
   }
 
