@@ -22,13 +22,17 @@ export class TeamsController {
   }
 
   @Get()
-  findAll(): Promise<Team[]> {
-    return this.teamsService.findAll({});
+  findAll(@CurrentUser() user: User) {
+    return this.teamsService.findAll({ userId: user.id });
   }
 
   @Get(':id')
   findOne(@Param('id') id: string): Promise<Team> {
     return this.teamsService.findOne({ id: +id });
+  }
+  @Get(':id/addUser')
+  addUser(@Param('id') teamId: string, @Body() user: Pick<User, 'email'>) {
+    return this.teamsService.addUser({ email: user.email, teamId: +teamId });
   }
 
   @Patch(':id')

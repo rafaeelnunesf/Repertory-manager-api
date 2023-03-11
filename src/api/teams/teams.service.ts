@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, Team, User } from '@prisma/client';
+import { Prisma, Team, TeamUser, User } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 
 @Injectable()
@@ -23,20 +23,79 @@ export class TeamsService {
     });
   }
 
+  async addUser(params: { email: string; teamId: number }): Promise<void> {
+    const { email, teamId } = params;
+
+    const user = await this.prisma.user.findUnique({ where: { email } });
+
+    await this.prisma.teamUser.create({
+      data: {
+        main: false,
+
+        user: {
+          connect: {
+            id: user.id,
+          },
+        },
+        team: {
+          connect: {
+            id: teamId,
+          },
+        },
+      },
+    });
+  }
+
   async findAll(params: {
+    userId?: number;
     skip?: number;
     take?: number;
-    cursor?: Prisma.TeamWhereUniqueInput;
-    where?: Prisma.TeamWhereInput;
-    orderBy?: Prisma.TeamOrderByWithRelationInput;
-  }): Promise<Team[]> {
-    const { skip, take, cursor, where, orderBy } = params;
-    return this.prisma.user.findMany({
+    cursor?: Prisma.TeamUserWhereUniqueInput;
+    orderBy?: Prisma.TeamUserOrderByWithRelationInput;
+  }) {
+    const { skip, take, cursor, userId, orderBy } = params;
+
+    const result = await this.prisma.teamUser.findMany({
+      where: { userId },
       skip,
       take,
       cursor,
-      where,
       orderBy,
+
+      select: {
+        team: {
+          include: {
+            users: {
+              select: {
+                main: false,
+                user: {
+                  select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+        main: true,
+      },
+    });
+
+    return result.map((item) => {
+      return {
+        id: item.team.id,
+        main: item.main,
+        name: item.team.name,
+        users: item.team.users.map((user) => {
+          return {
+            id: user.user.id,
+            name: user.user.name,
+            email: user.user.email,
+          };
+        }),
+      };
     });
   }
 
