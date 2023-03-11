@@ -16,7 +16,7 @@ model User {
   email    String     @unique
   name     String
   password String
-  team     TeamUser[]
+  teams    TeamUser[]
 
   @@map("users")
 }
@@ -35,7 +35,7 @@ model TeamUser {
 model Team {
   id          Int         @id @default(autoincrement())
   name        String
-  user        TeamUser[]
+  users       TeamUser[]
   repertoires Repertory[]
 
   @@map("teams")
