@@ -59,7 +59,8 @@ export class UsersService {
       data: {
         ...data,
         password: hashedPassword,
-        team: {
+
+        teams: {
           create: [
             {
               main: true,
