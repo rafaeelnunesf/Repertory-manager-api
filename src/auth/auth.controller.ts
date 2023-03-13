@@ -12,8 +12,8 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 import { AuthRequest } from './models/AuthRequest';
 import { Public } from './decorators/public.decorator';
 import { UsersService } from '../api/users/users.service';
-import { Prisma } from '@prisma/client';
 import { UserToken } from './models/UserToken';
+import { CreateUserDto } from '../api/users/dtos/create-user.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -32,7 +32,7 @@ export class AuthController {
 
   @Public()
   @Post('signup')
-  public async createUser(@Body() body: Prisma.UserCreateInput): Promise<void> {
+  public async createUser(@Body() body: CreateUserDto): Promise<void> {
     await this.userService.create(body);
   }
 }
