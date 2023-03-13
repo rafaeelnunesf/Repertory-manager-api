@@ -23,12 +23,14 @@ describe('CustomersService', () => {
     await prisma.user.deleteMany({});
     await prisma.team.deleteMany();
     await prisma.teamUser.deleteMany();
+    await prisma.repertory.deleteMany();
   });
 
   afterAll(async () => {
     await prisma.user.deleteMany({});
     await prisma.team.deleteMany();
     await prisma.teamUser.deleteMany();
+    await prisma.repertory.deleteMany();
     await prisma.$disconnect();
   });
 
@@ -43,6 +45,7 @@ describe('CustomersService', () => {
     await prisma.user.deleteMany({});
     await prisma.team.deleteMany();
     await prisma.teamUser.deleteMany();
+    await prisma.repertory.deleteMany();
   });
 
   it('should be defined', () => {

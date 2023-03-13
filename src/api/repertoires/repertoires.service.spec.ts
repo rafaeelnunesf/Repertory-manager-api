@@ -1,12 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { TeamsService } from './teams.service';
+import { RepertoiresService } from './repertoires.service';
+import { PrismaService } from '../../prisma/prisma.service';
 import { ConfigService } from '../../config/config.service';
 import { Prisma, PrismaClient } from '@prisma/client';
-import { PrismaService } from '../../prisma/prisma.service';
 
-describe('TeamsService', () => {
-  let service: TeamsService;
-
+describe('RepertoiresService', () => {
+  let service: RepertoiresService;
   const config = new ConfigService();
   const prisma = new PrismaClient({
     datasources: {
@@ -41,10 +40,10 @@ describe('TeamsService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [TeamsService, PrismaService],
+      providers: [RepertoiresService, PrismaService],
     }).compile();
 
-    service = module.get<TeamsService>(TeamsService);
+    service = module.get<RepertoiresService>(RepertoiresService);
   });
 
   it('should be defined', () => {
