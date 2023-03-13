@@ -1,6 +1,7 @@
-import { Prisma, User } from '@prisma/client';
+import { User } from '@prisma/client';
 import { Controller, Get, Body, Patch, Param, Delete } from '@nestjs/common';
 import { UsersService } from './users.service';
+import { UpdateUserDto } from './dtos/update-user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -17,10 +18,7 @@ export class UsersController {
   }
 
   @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() data: Prisma.UserUpdateInput,
-  ): Promise<User> {
+  update(@Param('id') id: string, @Body() data: UpdateUserDto): Promise<User> {
     return this.usersService.update({ where: { id: +id }, data });
   }
 
