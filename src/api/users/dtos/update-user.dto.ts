@@ -1,13 +1,14 @@
 import { Prisma } from '@prisma/client';
-import { IsEmpty, IsString } from 'class-validator';
+import { IsOptional, IsString, Length } from 'class-validator';
 
-export class UpdateUserDto implements Prisma.UserUpdateInput {
+export class UpdateUserDto implements Omit<Prisma.UserUpdateInput, 'email'> {
   @IsString()
-  name: string;
+  @IsOptional()
+  @Length(3, 20)
+  name?: string;
 
-  @IsEmpty()
-  email: string;
-
-  @IsEmpty()
-  password: string;
+  @IsString()
+  @IsOptional()
+  @Length(3)
+  password?: string;
 }
