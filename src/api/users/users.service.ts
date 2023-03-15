@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { Prisma, User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../../prisma/prisma.service';
+import { AtLeastOneFieldException } from './exceptions/at-least-one-filed.exception';
 import { DuplicateException } from './exceptions/duplicated.exception';
-import { NotAllowedException } from './exceptions/not-allowed-filed.exception';
 import { NotFoundException } from './exceptions/not-found.exception';
 
 @Injectable()
@@ -76,8 +76,23 @@ export class UsersService {
     where: Prisma.UserWhereUniqueInput;
     data: Prisma.UserUpdateInput;
   }): Promise<User> {
-    const { where, data } = params;
-    if (data.password || data.email) throw new NotAllowedException();
+    const {
+      where,
+      data: { name, password },
+    } = params;
+    const data = {};
+
+    if (!name && !password) throw new AtLeastOneFieldException();
+
+    let hashedPassword: string;
+
+    if (password) {
+      const salt = 10;
+      hashedPassword = await bcrypt.hash(password as string, salt);
+      data['password'] = hashedPassword;
+    }
+    if (name) data['name'] = name;
+
     return this.prisma.user.update({
       data,
       where,
