@@ -1,8 +1,24 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { RepertoiresService } from './repertoires.service';
 import { CreateRepertoireDto } from './dto/create-repertoire.dto';
 import { UpdateRepertoireDto } from './dto/update-repertoire.dto';
+import { ApiHeader, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Repertoires')
+@ApiHeader({
+  name: 'Authorization',
+  description: 'The access token',
+  example: 'Bearer abc123',
+  required: true,
+})
 @Controller('repertoires')
 export class RepertoiresController {
   constructor(private readonly repertoiresService: RepertoiresService) {}
@@ -23,7 +39,10 @@ export class RepertoiresController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateRepertoireDto: UpdateRepertoireDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateRepertoireDto: UpdateRepertoireDto,
+  ) {
     return this.repertoiresService.update(+id, updateRepertoireDto);
   }
 

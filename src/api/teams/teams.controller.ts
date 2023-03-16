@@ -11,7 +11,14 @@ import {
 import { Prisma, Team, User } from '@prisma/client';
 import { TeamsService } from './teams.service';
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
-
+import { ApiHeader, ApiTags } from '@nestjs/swagger';
+@ApiTags('Teams')
+@ApiHeader({
+  name: 'Authorization',
+  description: 'The access token',
+  example: 'Bearer abc123',
+  required: true,
+})
 @Controller('teams')
 export class TeamsController {
   constructor(private readonly teamsService: TeamsService) {}
@@ -30,7 +37,8 @@ export class TeamsController {
   findOne(@Param('id') id: string): Promise<Team> {
     return this.teamsService.findOne({ id: +id });
   }
-  @Get(':id/addUser')
+
+  @Get(':id/add-user')
   addUser(@Param('id') teamId: string, @Body() user: Pick<User, 'email'>) {
     return this.teamsService.addUser({ email: user.email, teamId: +teamId });
   }

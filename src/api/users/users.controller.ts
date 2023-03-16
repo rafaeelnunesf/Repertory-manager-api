@@ -2,7 +2,15 @@ import { User } from '@prisma/client';
 import { Controller, Get, Body, Patch, Param, Delete } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dtos/update-user.dto';
+import { ApiHeader, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Users')
+@ApiHeader({
+  name: 'Authorization',
+  description: 'The access token',
+  example: 'Bearer abc123',
+  required: true,
+})
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
