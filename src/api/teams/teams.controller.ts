@@ -1,3 +1,4 @@
+import { RepertoiresService } from './../repertoires/repertoires.service';
 import { CreateTeamDto } from './dtos/create-team.dto';
 import {
   Controller,
@@ -8,7 +9,7 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
-import { Prisma, Team, User } from '@prisma/client';
+import { Prisma, Repertory, Team, User } from '@prisma/client';
 import { TeamsService } from './teams.service';
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 import { ApiHeader, ApiTags } from '@nestjs/swagger';
@@ -21,7 +22,10 @@ import { ApiHeader, ApiTags } from '@nestjs/swagger';
 })
 @Controller('teams')
 export class TeamsController {
-  constructor(private readonly teamsService: TeamsService) {}
+  constructor(
+    private readonly teamsService: TeamsService,
+    private readonly repertoryService: RepertoiresService,
+  ) {}
 
   @Post()
   create(@Body() data: CreateTeamDto, @CurrentUser() user: User) {
@@ -38,9 +42,20 @@ export class TeamsController {
     return this.teamsService.findOne({ id: +id });
   }
 
-  @Get(':id/add-user')
+  @Post(':id/add-user')
   addUser(@Param('id') teamId: string, @Body() user: Pick<User, 'email'>) {
     return this.teamsService.addUser({ email: user.email, teamId: +teamId });
+  }
+
+  @Post(':id/add-repertory')
+  addRepertory(
+    @Param('id') teamId: string,
+    @Body() name: string,
+  ): Promise<Repertory> {
+    return this.repertoryService.create({
+      teamId: +teamId,
+      name,
+    });
   }
 
   @Patch(':id')
