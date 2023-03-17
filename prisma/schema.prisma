@@ -43,6 +43,7 @@ model Team {
 
 model Repertory {
   id     Int             @id @default(autoincrement())
+  name   String
   team   Team            @relation(fields: [teamId], references: [id])
   teamId Int
   songs  RepertorySong[]
